@@ -1,7 +1,10 @@
 <template>
   <div id="box">
     <input id="inputBox" placeholder="What needs to be done?"/>
-    <List :todo-list="todoList"/>
+    <List
+      :todo-list="todoList"
+      @check-clicked="onCheckClicked"
+    />
   </div>
 </template>
 
@@ -21,6 +24,15 @@ export default {
         { idx:'4', content: 'monc' },
       ]
     }
+  },
+  methods:{
+    onCheckClicked(target){
+      if(target.checked){
+        target.parentElement.style.textDecoration="line-through";
+      }else{
+        target.parentElement.style.textDecoration="none";
+      }
+    }
   }
 }
 </script>
@@ -29,8 +41,7 @@ export default {
   #box{
     margin-right: auto;
     margin-left: auto;
-    width: 70%;
-    1background-color: gray;
+    width: 50%;
     border: 1px solid lightgray;
   }
   #inputBox{
