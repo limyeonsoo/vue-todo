@@ -7,6 +7,15 @@
         <span :id="index" class="listX hideX" @click="onListXClicked">x</span>
       </li>
     </div>
+    <div id="filterBoxContainer" v-if="showToolBox">
+      <span style="font-size:x-small">{{this.todoList.length}} items left</span>
+      <div id="filterBox">
+        <div class="filterBoxChild">All</div>
+        <div class="filterBoxChild">Active</div>
+        <div class="filterBoxChild">Completed</div>
+      </div>
+      <div>&nbsp;</div>
+    </div>
   </div>
 
 </template>
@@ -16,6 +25,9 @@ export default {
   name: "list",
   props: {
     todoList: Array,
+  },
+  computed:{
+    showToolBox(){ return this.todoList.length;}
   },
   methods:{
     onClickChecked(event){
@@ -59,5 +71,23 @@ li{
 }
 .showX{
   display: block;
+}
+#filterBoxContainer{
+  line-height: 100%;
+  height: 100%;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+#filterBox{
+  display: flex;
+  width: 60%;
+  justify-content: space-evenly
+}
+.filterBoxChild{
+  padding: 3px;
+}
+.filterBoxChild:hover{
+  border: 1px solid red;
 }
 </style>

@@ -19,12 +19,7 @@ export default {
   components: { Box },
   data(){
     return{
-      todoList:[
-        { idx:'1', content: 'clover' },
-        { idx:'2', content: 'milo' },
-        { idx:'3', content: 'kwang' },
-        { idx:'4', content: 'monc' },
-      ]
+      todoList:[]
     }
   },
   methods:{
