@@ -4,7 +4,7 @@
       <li @mouseenter="onMouseOver" @mouseleave="onMouseOut">
         <input type="checkbox" @change="onClickChecked"/>
         {{todo.content}}
-        <span class="listX hideX" @click="onListXClicked">x</span>
+        <span :id="index" class="listX hideX" @click="onListXClicked">x</span>
       </li>
     </div>
   </div>
@@ -22,16 +22,13 @@ export default {
       this.$emit('check-clicked', event.target)
     },
     onMouseOver(event){
-      console.log(event.target.lastChild);
-        event.target.lastChild.classList.remove('hideX')
-        event.target.lastChild.classList.add('showX');
+      this.$emit('mouse-entered', event.target)
     },
     onMouseOut(event){
-      event.target.lastChild.classList.remove('showX');
-      event.target.lastChild.classList.add('hideX');
+      this.$emit('mouse-leaved', event.target);
     },
     onListXClicked(event){
-      console.log(event.target);
+      this.$emit('list-x-clicked', event.target);
     }
   }
 }
