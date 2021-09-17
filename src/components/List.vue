@@ -44,6 +44,10 @@ li{
   padding-left: 0;
   list-style: none;
   border: 1px solid lightgray;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .listX{
   float:right;

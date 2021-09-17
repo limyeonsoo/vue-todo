@@ -22,38 +22,23 @@ export default {
   components:{
     List,
   },
-  data(){
-    return{
-      todoList:[
-        { idx:'1', content: 'clover' },
-        { idx:'2', content: 'milo' },
-        { idx:'3', content: 'kwang' },
-        { idx:'4', content: 'monc' },
-      ]
-    }
+  props:{
+    todoList: Array
   },
   methods:{
     onChangeInput(){
-      const value = document.querySelector('#inputBox').value;
-      console.log(value)
+      this.$emit('change-input');
     },
     onClickEnter(event){
-      if(event.key === 'Enter'){
-        let inputTag = document.querySelector('#inputBox');
-        if(inputTag.value === '') return;
-        this.todoList.push({idx:this.todoList.length+1, content:inputTag.value})
-        inputTag.value = '';
-      }
+      this.$emit('click-enter', event);
     },
     onCheckClicked(target){
-      if(target.checked){
-        target.parentElement.style.textDecoration="line-through";
-      }else{
-        target.parentElement.style.textDecoration="none";
-      }
+      this.$emit('click-check', target);
+    },
+    onListXClicked(target){
+      this.$emit('list-x-clicked', target);
     },
     onMouseEntered(target){
-      console.log(target);
       target.lastChild.classList.remove('hideX');
       target.lastChild.classList.add('showX');
     },
@@ -61,10 +46,6 @@ export default {
       target.lastChild.classList.remove('showX');
       target.lastChild.classList.add('hideX');
     },
-    onListXClicked(target){
-      let removedTargetId = target.getAttribute('id');
-      this.todoList.splice(removedTargetId, 1);
-    }
   }
 }
 </script>

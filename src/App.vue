@@ -1,18 +1,65 @@
 <template>
   <div id="app">
-    <Title msg="Welcome to Your Vue.js App"/>
-    <Box />
+    <div id="todos">todos</div>
+    <Box
+        :todo-list="todoList"
+        @change-input="onChangeInput"
+        @click-enter="onClickEnter"
+        @click-check="onClickCheck"
+        @list-x-clicked="onListXClicked"
+    />
   </div>
 </template>
 
 <script>
-import Title from './components/Title.vue'
 import Box from './components/Box.vue';
 
 export default {
   name: 'App',
-  components: {
-    Title, Box
+  components: { Box },
+  data(){
+    return{
+      todoList:[
+        { idx:'1', content: 'clover' },
+        { idx:'2', content: 'milo' },
+        { idx:'3', content: 'kwang' },
+        { idx:'4', content: 'monc' },
+      ]
+    }
+  },
+  methods:{
+    onChangeInput(){
+      const value = document.querySelector('#inputBox').value;
+      console.log(value)
+    },
+    onClickEnter(event){
+      console.log(event);
+      if(event.key === 'Enter'){
+        let inputTag = document.querySelector('#inputBox');
+        if(inputTag.value === '') return;
+        this.todoList.push({idx:String(this.todoList.length+1), content:inputTag.value})
+        inputTag.value = '';
+      }
+    },
+    onClickCheck(target){
+      if(target.checked){
+        target.parentElement.style.textDecoration="line-through";
+      }else{
+        target.parentElement.style.textDecoration="none";
+      }
+    },
+    onMouseEntered(target){
+      target.lastChild.classList.remove('hideX');
+      target.lastChild.classList.add('showX');
+    },
+    onMouseLeaved(target){
+      target.lastChild.classList.remove('showX');
+      target.lastChild.classList.add('hideX');
+    },
+    onListXClicked(target){
+      let removedTargetId = target.getAttribute('id');
+      this.todoList.splice(removedTargetId, 1);
+    }
   }
 }
 </script>
@@ -25,5 +72,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+#todos{
+  font-size: 125px;
+  color: rgba(255, 0, 0, 0.3);
 }
 </style>
