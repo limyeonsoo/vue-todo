@@ -7,10 +7,12 @@
     />
     <List
       :todo-list="todoList"
+      :filtering="filtering"
       @check-clicked="onCheckClicked"
       @mouse-entered="onMouseEntered"
       @mouse-leaved="onMouseLeaved"
       @list-x-clicked="onListXClicked"
+      @filter-clicked="onFilterClicked"
     />
   </div>
 </template>
@@ -23,7 +25,8 @@ export default {
     List,
   },
   props:{
-    todoList: Array
+    todoList: Array,
+    filtering: String
   },
   methods:{
     onChangeInput(){
@@ -32,8 +35,8 @@ export default {
     onClickEnter(event){
       this.$emit('click-enter', event);
     },
-    onCheckClicked(target){
-      this.$emit('click-check', target);
+    onCheckClicked(id, checked){
+      this.$emit('click-checked', id, checked);
     },
     onListXClicked(target){
       this.$emit('list-x-clicked', target);
@@ -46,6 +49,9 @@ export default {
       target.lastChild.classList.remove('showX');
       target.lastChild.classList.add('hideX');
     },
+    onFilterClicked(filtering){
+      this.$emit('filter-clicked', filtering);
+    }
   }
 }
 </script>

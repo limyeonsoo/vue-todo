@@ -1,15 +1,15 @@
 <template>
   <div id="listBox">
-    <div v-for="(todo, index) in todoList" :key="index">
-      <li @mouseenter="onMouseOver" @mouseleave="onMouseOut">
-        <input type="checkbox" @change="onClickChecked"/>
+    <div v-for="(todo, index) in filteredToDoList" :key="index">
+      <li :style="{textDecoration: todo.type === 'Completed' ? 'line-through' : 'none'}" @mouseenter="onMouseOver" @mouseleave="onMouseOut">
+        <input :id="index" type="checkbox" @change="onClickChecked"/>
         {{todo.content}}
-        <span :id="index" class="listX hideX" @click="onListXClicked">x</span>
+        <span class="listX hideX" @click="onListXClicked">x</span>
       </li>
     </div>
-    <div id="filterBoxContainer" v-if="showToolBox">
-      <span style="font-size:x-small">{{this.todoList.length}} items left</span>
-      <div id="filterBox">
+    <div id="filterBoxContainer" v-show="filteredToDoList">
+      <div id="filterInfo" style="font-size:x-small">{{filteredToDoList.length}} items left</div>
+      <div id="filterBox" @click="onFilterClicked">
         <div class="filterBoxChild">All</div>
         <div class="filterBoxChild">Active</div>
         <div class="filterBoxChild">Completed</div>
@@ -17,7 +17,6 @@
       <div>&nbsp;</div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -25,13 +24,19 @@ export default {
   name: "list",
   props: {
     todoList: Array,
+    filtering: String
   },
   computed:{
-    showToolBox(){ return this.todoList.length;}
+    filteredToDoList(){
+      if(this.filtering === 'All')
+        return this.todoList;
+      else
+        return this.todoList.filter(todo => todo.type === this.filtering);
+    },
   },
   methods:{
     onClickChecked(event){
-      this.$emit('check-clicked', event.target)
+      this.$emit('check-clicked', event.target.id, event.target.checked)
     },
     onMouseOver(event){
       this.$emit('mouse-entered', event.target)
@@ -39,8 +44,11 @@ export default {
     onMouseOut(event){
       this.$emit('mouse-leaved', event.target);
     },
-    onListXClicked(event){
+    onListXClicked(event) {
       this.$emit('list-x-clicked', event.target);
+    },
+    onFilterClicked(event){
+      this.$emit('filter-clicked', event.target.textContent);
     }
   }
 }
@@ -72,20 +80,27 @@ li{
 .showX{
   display: block;
 }
+.showDecoration{
+  text-decoration: line-through;
+}
+.hideDecoration{
+  text-decoration: none;
+}
 #filterBoxContainer{
-  line-height: 100%;
-  height: 100%;
-  padding: 10px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  padding: 2%;
+}
+
+#filterInfo{
+  width: 33%;
 }
 #filterBox{
+  width: 33%;
   display: flex;
-  width: 60%;
-  justify-content: space-evenly
-}
-.filterBoxChild{
-  padding: 3px;
+  justify-content: space-between;
+  padding: 5px;
 }
 .filterBoxChild:hover{
   border: 1px solid red;

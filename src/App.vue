@@ -3,10 +3,12 @@
     <div id="todos">todos</div>
     <Box
         :todo-list="todoList"
+        :filtering="filtering"
         @change-input="onChangeInput"
         @click-enter="onClickEnter"
-        @click-check="onClickCheck"
+        @click-checked="onClickChecked"
         @list-x-clicked="onListXClicked"
+        @filter-clicked="onFilterClicked"
     />
   </div>
 </template>
@@ -16,32 +18,48 @@ import Box from './components/Box.vue';
 
 export default {
   name: 'App',
-  components: { Box },
   data(){
     return{
+      filtering: 'All',
       todoList:[]
+      /* {
+            idx: int,
+            content: string,
+            type: string,  (Active / Completed)
+      */
     }
   },
+  components: { Box },
   methods:{
     onChangeInput(){
       const value = document.querySelector('#inputBox').value;
-      console.log(value)
+      console.log(value);
     },
     onClickEnter(event){
-      console.log(event);
       if(event.key === 'Enter'){
+        // 이거 고쳐야함. input에 value를 data로 선언적으로.
         let inputTag = document.querySelector('#inputBox');
         if(inputTag.value === '') return;
-        this.todoList.push({idx:String(this.todoList.length+1), content:inputTag.value})
+        this.todoList.push({
+          idx:String(this.todoList.length+1),
+          content:inputTag.value,
+          type: 'Active'
+        })
         inputTag.value = '';
       }
     },
-    onClickCheck(target){
-      if(target.checked){
-        target.parentElement.style.textDecoration="line-through";
+    onClickChecked(id, checked){
+      console.log(id, checked);
+      if(checked){
+        this.todoList[id].type = 'Completed';
       }else{
-        target.parentElement.style.textDecoration="none";
+        this.todoList[id].type = 'Active';
       }
+      // if(target.checked){
+      //   target.parentElement.style.textDecoration="line-through";
+      // }else{
+      //   target.parentElement.style.textDecoration="none";
+      // }
     },
     onMouseEntered(target){
       target.lastChild.classList.remove('hideX');
@@ -54,6 +72,9 @@ export default {
     onListXClicked(target){
       let removedTargetId = target.getAttribute('id');
       this.todoList.splice(removedTargetId, 1);
+    },
+    onFilterClicked(filtering){
+      this.filtering = filtering;
     }
   }
 }
