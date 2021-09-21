@@ -2,7 +2,6 @@
   <div id="box">
     <input id="inputBox"
            placeholder="What needs to be done?"
-           @input="onChangeInput($event)"
            @keypress="onClickEnter"
     />
     <List
@@ -29,9 +28,6 @@ export default {
     filtering: String
   },
   methods:{
-    onChangeInput(){
-      this.$emit('change-input');
-    },
     onClickEnter(event){
       this.$emit('click-enter', event);
     },

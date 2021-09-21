@@ -4,7 +4,6 @@
     <Box
         :todo-list="todoList"
         :filtering="filtering"
-        @change-input="onChangeInput"
         @click-enter="onClickEnter"
         @click-checked="onClickChecked"
         @list-x-clicked="onListXClicked"
@@ -23,7 +22,6 @@ export default {
       filtering: 'All',
       todoList:[]
       /* {
-            idx: int,
             content: string,
             type: string,  (Active / Completed)
       */
@@ -31,19 +29,16 @@ export default {
   },
   components: { Box },
   methods:{
-    onChangeInput(){
-      const value = document.querySelector('#inputBox').value;
-      console.log(value);
-    },
     onClickEnter(event){
       if(event.key === 'Enter'){
         // 이거 고쳐야함. input에 value를 data로 선언적으로.
         let inputTag = document.querySelector('#inputBox');
         if(inputTag.value === '') return;
         this.todoList.push({
-          idx:String(this.todoList.length+1),
+          idx: this.todoList.length,
           content:inputTag.value,
-          type: 'Active'
+          type: 'Active',
+          checked: null
         })
         inputTag.value = '';
       }
@@ -51,15 +46,28 @@ export default {
     onClickChecked(id, checked){
       console.log(id, checked);
       if(checked){
-        this.todoList[id].type = 'Completed';
-      }else{
-        this.todoList[id].type = 'Active';
+
+        console.log(Object.values(this.todoList));
+        this.$set(this.todoList, id, {
+          ...this.todoList[id],
+          type: 'Completed',
+          checked: true
+        })
+        console.log(Object.values(this.todoList));
       }
-      // if(target.checked){
-      //   target.parentElement.style.textDecoration="line-through";
-      // }else{
-      //   target.parentElement.style.textDecoration="none";
-      // }
+      else {
+        //this.todoList[id].type = 'Active';
+        //this.todoList[id].checked = null;
+        //this.todoList.$set(this.todoList, 'checked', null);
+
+        console.log(Object.values(this.todoList));
+        this.$set(this.todoList, id, {
+          ...this.todoList[id],
+          type: 'Active',
+          checked: null
+        })
+        console.log(Object.values(this.todoList));
+      }
     },
     onMouseEntered(target){
       target.lastChild.classList.remove('hideX');

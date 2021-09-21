@@ -1,9 +1,9 @@
 <template>
   <div id="listBox">
-    <div v-for="(todo, index) in filteredToDoList" :key="index">
+    <div v-for="(todo, key, index) in filteredToDoList" :key="index">
       <li :style="{textDecoration: todo.type === 'Completed' ? 'line-through' : 'none'}" @mouseenter="onMouseOver" @mouseleave="onMouseOut">
-        <input :id="index" type="checkbox" @change="onClickChecked"/>
-        {{todo.content}}
+        <input :id="todo.idx" v-model="todo['checked']" type="checkbox" @change="onClickChecked"/>
+        <label :for="todo.idx">{{todo.content}}</label>
         <span class="listX hideX" @click="onListXClicked">x</span>
       </li>
     </div>
@@ -16,6 +16,8 @@
       </div>
       <div>&nbsp;</div>
     </div>
+    {{filteredToDoList}}
+    {{todoList}}
   </div>
 </template>
 
@@ -36,6 +38,7 @@ export default {
   },
   methods:{
     onClickChecked(event){
+      console.log(event.target);
       this.$emit('check-clicked', event.target.id, event.target.checked)
     },
     onMouseOver(event){
@@ -77,14 +80,8 @@ li{
 .hideX{
   display: none;
 }
-.showX{
-  display: block;
-}
 .showDecoration{
   text-decoration: line-through;
-}
-.hideDecoration{
-  text-decoration: none;
 }
 #filterBoxContainer{
   display: flex;
@@ -103,6 +100,6 @@ li{
   padding: 5px;
 }
 .filterBoxChild:hover{
-  border: 1px solid red;
+  outline: 1px solid red;
 }
 </style>
