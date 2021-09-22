@@ -16,8 +16,6 @@
       </div>
       <div>&nbsp;</div>
     </div>
-    {{filteredToDoList}}
-    {{todoList}}
   </div>
 </template>
 
@@ -38,7 +36,6 @@ export default {
   },
   methods:{
     onClickChecked(event){
-      console.log(event.target);
       this.$emit('check-clicked', event.target.id, event.target.checked)
     },
     onMouseOver(event){

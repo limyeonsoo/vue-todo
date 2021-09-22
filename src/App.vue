@@ -44,29 +44,21 @@ export default {
       }
     },
     onClickChecked(id, checked){
-      console.log(id, checked);
+      console.log(id);
+      console.log(checked);
       if(checked){
-
-        console.log(Object.values(this.todoList));
         this.$set(this.todoList, id, {
           ...this.todoList[id],
           type: 'Completed',
           checked: true
         })
-        console.log(Object.values(this.todoList));
       }
       else {
-        //this.todoList[id].type = 'Active';
-        //this.todoList[id].checked = null;
-        //this.todoList.$set(this.todoList, 'checked', null);
-
-        console.log(Object.values(this.todoList));
         this.$set(this.todoList, id, {
           ...this.todoList[id],
           type: 'Active',
           checked: null
         })
-        console.log(Object.values(this.todoList));
       }
     },
     onMouseEntered(target){
@@ -78,7 +70,7 @@ export default {
       target.lastChild.classList.add('hideX');
     },
     onListXClicked(target){
-      let removedTargetId = target.getAttribute('id');
+      let removedTargetId = target.parentNode.firstChild.getAttribute('id');
       this.todoList.splice(removedTargetId, 1);
     },
     onFilterClicked(filtering){
