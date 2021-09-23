@@ -8,12 +8,15 @@
         @click-checked="onClickChecked"
         @list-x-clicked="onListXClicked"
         @filter-clicked="onFilterClicked"
+        @clear-clicked="onClearClicked"
+        @icon-clicked="onIconClicked"
     />
   </div>
 </template>
 
 <script>
 import Box from './components/Box.vue';
+import {uuid} from 'vue-uuid';
 
 export default {
   name: 'App',
@@ -24,7 +27,7 @@ export default {
       /* {
             content: string,
             type: string,  (Active / Completed)
-      */
+      */,
     }
   },
   components: { Box },
@@ -35,7 +38,7 @@ export default {
         let inputTag = document.querySelector('#inputBox');
         if(inputTag.value === '') return;
         this.todoList.push({
-          idx: this.todoList.length,
+          idx: uuid.v1(),
           content:inputTag.value,
           type: 'Active',
           checked: null
@@ -46,16 +49,17 @@ export default {
     onClickChecked(id, checked){
       console.log(id);
       console.log(checked);
+      let updateTargetIndex = this.todoList.findIndex(todo => todo.idx === id);
       if(checked){
-        this.$set(this.todoList, id, {
-          ...this.todoList[id],
+        this.$set(this.todoList, updateTargetIndex, {
+          ...this.todoList[updateTargetIndex],
           type: 'Completed',
           checked: true
         })
       }
       else {
-        this.$set(this.todoList, id, {
-          ...this.todoList[id],
+        this.$set(this.todoList, updateTargetIndex, {
+          ...this.todoList[updateTargetIndex],
           type: 'Active',
           checked: null
         })
@@ -69,12 +73,31 @@ export default {
       target.lastChild.classList.remove('showX');
       target.lastChild.classList.add('hideX');
     },
-    onListXClicked(target){
-      let removedTargetId = target.parentNode.firstChild.getAttribute('id');
-      this.todoList.splice(removedTargetId, 1);
+    onListXClicked(id){
+      let removeTargetIndex = this.todoList.findIndex(todo => todo.idx === id);
+      this.todoList.splice(removeTargetIndex, 1);
     },
     onFilterClicked(filtering){
       this.filtering = filtering;
+    },
+    onClearClicked(){
+      this.todoList = this.todoList.filter(todo => todo.type === 'Active')
+    },
+    onIconClicked(){
+      let currState = this.todoList.filter(todo => todo.checked === true).length;
+      console.log(currState, this.todoList.length);
+      if(currState === this.todoList.length){
+        this.todoList.forEach(todo => {
+          todo.type = 'Active';
+          todo.checked = null;
+        })
+      }else{
+        this.todoList.forEach(todo => {
+          todo.type = 'Completed';
+          todo.checked = true;
+        })
+      }
+      console.log(JSON.stringify(this.todoList));
     }
   }
 }
