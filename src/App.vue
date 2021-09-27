@@ -10,7 +10,6 @@
         @filter-clicked="onFilterClicked"
         @clear-clicked="onClearClicked"
         @icon-clicked="onIconClicked"
-        @db-clicked="onDblClicked"
         @fix-enter="onFixEnter"
     />
   </div>
@@ -29,14 +28,15 @@ export default {
       /* {
             content: string,
             type: string,  (Active / Completed)
+            checked: null / true
       */,
+      fixState:false,
     }
   },
   components: { Box },
   methods:{
     onClickEnter(event){
       if(event.key === 'Enter'){
-        // 이거 고쳐야함. input에 value를 data로 선언적으로.
         let inputTag = document.querySelector('#inputBox');
         if(inputTag.value === '') return;
         this.todoList.push({
@@ -89,17 +89,17 @@ export default {
         })
       }
     },
-    onDblClicked(){
-      this.fixState = true;
-    },
-    onFixEnter(target){
-      let id = target.getAttribute('index');
-      let val = target.value;
-      let fixTargetIndex = this.todoList.findIndex(todo => todo.idx === id);
-      this.$set(this.todoList, fixTargetIndex, {
-        ...this.todoList[fixTargetIndex],
-        content: val,
-      })
+    onFixEnter(event){
+      if(event.key === 'Enter') {
+        let id = event.target.getAttribute('wrapId');
+        let val = event.target.value;
+        let fixTargetIndex = this.todoList.findIndex(todo => todo.idx === id);
+        this.$set(this.todoList, fixTargetIndex, {
+          ...this.todoList[fixTargetIndex],
+          content: val,
+        })
+        event.target.blur();
+      }
     }
   }
 }

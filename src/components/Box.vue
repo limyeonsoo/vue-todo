@@ -1,7 +1,6 @@
 <template>
   <div id="box">
     <div id="inputBoxContainer">
-<!--      <i v-if="showIcon" for="inputBox">V</i>-->
       <img v-show="showIcon" @click="onIconClicked" src="../assets/check.png"/>
       <input id="inputBox"
              placeholder="What needs to be done?"
@@ -16,7 +15,6 @@
       @list-x-clicked="onListXClicked"
       @filter-clicked="onFilterClicked"
       @clear-clicked="onClearClicked"
-      @db-clicked="onDblClicked"
       @fix-enter="onFixEnter"
     />
   </div>
@@ -31,7 +29,7 @@ export default {
   },
   props:{
     todoList: Array,
-    filtering: String
+    filtering: String,
   },
   computed:{
     showIcon(){
@@ -57,11 +55,8 @@ export default {
     onIconClicked(){
       this.$emit('icon-clicked');
     },
-    onDblClicked(id){
-      this.$emit('db-clicked', id);
-    },
-    onFixEnter(target){
-      this.$emit('fix-enter', target);
+    onFixEnter(event){
+      this.$emit('fix-enter', event);
     }
   }
 }

@@ -4,7 +4,11 @@
       <li>
         <input class="firstInput" :id="todo.idx" v-model="todo['checked']" type="checkbox" @change="onClickChecked"/>
         <div class="secondInputWrapper" style="display:inline-block; position:relative;">
-          <input class="secondInput" :index="todo.idx" :value="todo.content" @keypress="onFixEnter"/>
+<!--          <input :id="'InputForFix'+todo.idx" :wrapId="todo.idx" class="secondInput" :value="todo.content" @focusout="onFixFocusOut" @keypress="onFixEnter"/>-->
+          <input :id="'InputForFix'+todo.idx" :wrapId="todo.idx" class="secondInput" @focusout="onFixFocusOut" @keypress="onFixEnter"/>
+          <div :id="'DivForFix'+todo.idx" :wrapId="todo.idx" class="secondDiv" @dblclick="onFixDblClicked" style="position:absolute; left:0; right:0; top:0; bottom:0;" >
+            {{todo.content}}
+          </div>
         </div>
         <span v-show="showXBtnIdx === todo.idx" :id="todo.idx" class="listX" @click="onListXClicked">x</span>
       </li>
@@ -26,7 +30,7 @@ export default {
   name: "list",
   props: {
     todoList: Array,
-    filtering: String
+    filtering: String,
   },
   data(){
     return{
@@ -60,11 +64,21 @@ export default {
     onClearClicked(){
       this.$emit('clear-clicked');
     },
-    onDblClicked(event){
-      this.$emit('db-clicked', event.target);
+    onFixDblClicked(event){
+      let index = event.target.getAttribute('wrapId');
+      let secondTargetInput = document.querySelector('#InputForFix'+index);
+      event.target.style.display = 'none';
+      // event.target.style.zIndex = -99;
+      secondTargetInput.focus();
+    },
+    onFixFocusOut(event){
+      let index = event.target.getAttribute('wrapId');
+      let secondTargetDiv = document.querySelector('#DivForFix'+index);
+      event.target.value = "";
+      secondTargetDiv.style.display = 'block';
     },
     onFixEnter(event){
-      this.$emit('fix-enter', event.target);
+      this.$emit('fix-enter', event);
     },
   }
 }
@@ -98,29 +112,30 @@ li > .firstInput{
   cursor: pointer;
   margin: 0 3% 0 0;
 }
-li .secondInputWrapper{
+.secondInputWrapper{
   width: 80%;
 }
-li .secondInput{
+.secondInput{
   width: 100%;
   height: 100%;
   border: none;
   font-weight: bold;
   font-size: large;
-  -webkit-transition: color 0.5s ease-in-out;
-  transition: color 0.5s ease-in-out;
   background-color: transparent;
 }
-li > .firstInput:checked{
+.secondDiv{
+  -webkit-transition: color 0.5s ease-in-out;
+  transition: color 0.5s ease-in-out;
+}
+.firstInput:checked{
   background: url('../assets/checkItalic.png') center no-repeat;
   background-size: 13px;
   overflow: hidden;
   border-color: #5DC2AF;
 }
-li > .firstInput:checked + .secondInput{
+.firstInput:checked + .secondInputWrapper > .secondDiv{
   color: rgba(125, 125, 125, 0.5);
   text-decoration: line-through;
-
 }
 .listX{
   float:right;
