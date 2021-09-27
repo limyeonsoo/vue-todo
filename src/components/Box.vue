@@ -17,6 +17,7 @@
       @filter-clicked="onFilterClicked"
       @clear-clicked="onClearClicked"
       @db-clicked="onDblClicked"
+      @fix-enter="onFixEnter"
     />
   </div>
 </template>
@@ -58,6 +59,9 @@ export default {
     },
     onDblClicked(id){
       this.$emit('db-clicked', id);
+    },
+    onFixEnter(target){
+      this.$emit('fix-enter', target);
     }
   }
 }

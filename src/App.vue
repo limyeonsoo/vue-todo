@@ -11,6 +11,7 @@
         @clear-clicked="onClearClicked"
         @icon-clicked="onIconClicked"
         @db-clicked="onDblClicked"
+        @fix-enter="onFixEnter"
     />
   </div>
 </template>
@@ -88,10 +89,17 @@ export default {
         })
       }
     },
-    onDblClicked(id){
-      let targetInput = document.getElementById(id);
-
-      console.log(targetInput);
+    onDblClicked(){
+      this.fixState = true;
+    },
+    onFixEnter(target){
+      let id = target.getAttribute('index');
+      let val = target.value;
+      let fixTargetIndex = this.todoList.findIndex(todo => todo.idx === id);
+      this.$set(this.todoList, fixTargetIndex, {
+        ...this.todoList[fixTargetIndex],
+        content: val,
+      })
     }
   }
 }

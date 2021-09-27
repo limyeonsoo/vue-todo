@@ -3,7 +3,9 @@
     <div v-for="(todo, key, index) in filteredToDoList" :key="index" @mouseenter="showXBtnIdx = todo.idx" @mouseleave="showXBtnIdx = null">
       <li>
         <input class="firstInput" :id="todo.idx" v-model="todo['checked']" type="checkbox" @change="onClickChecked"/>
-        <input class="secondInput" :value="todo.content" disabled @dblclick="onDblClicked"/>
+        <div class="secondInputWrapper" style="display:inline-block; position:relative;">
+          <input class="secondInput" :index="todo.idx" :value="todo.content" @keypress="onFixEnter"/>
+        </div>
         <span v-show="showXBtnIdx === todo.idx" :id="todo.idx" class="listX" @click="onListXClicked">x</span>
       </li>
     </div>
@@ -59,8 +61,11 @@ export default {
       this.$emit('clear-clicked');
     },
     onDblClicked(event){
-      this.$emit('db-clicked', event.target.id);
-    }
+      this.$emit('db-clicked', event.target);
+    },
+    onFixEnter(event){
+      this.$emit('fix-enter', event.target);
+    },
   }
 }
 </script>
@@ -93,8 +98,11 @@ li > .firstInput{
   cursor: pointer;
   margin: 0 3% 0 0;
 }
-li > .secondInput{
-  width: 70%;
+li .secondInputWrapper{
+  width: 80%;
+}
+li .secondInput{
+  width: 100%;
   height: 100%;
   border: none;
   font-weight: bold;
