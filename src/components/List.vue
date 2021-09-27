@@ -16,9 +16,9 @@
     <div id="filterBoxContainer">
       <span id="filterInfo" style="font-size:x-small">{{toDoListCount}} items left</span>
       <div id="filterBox" @click="onFilterClicked">
-        <div class="filterBoxChild">All</div>
-        <div class="filterBoxChild">Active</div>
-        <div class="filterBoxChild">Completed</div>
+        <div class="filterBoxChild" :class="{ activeBorder: 'All' ===  currentFiltering }">All</div>
+        <div class="filterBoxChild" :class="{ activeBorder: 'Active' ===  currentFiltering }">Active</div>
+        <div class="filterBoxChild" :class="{ activeBorder: 'Completed' ===  currentFiltering }">Completed</div>
       </div>
       <div id="allClearBox" @click="onClearClicked">Clear completed</div>
     </div>
@@ -50,6 +50,9 @@ export default {
     showFilteringBox(){
       return this.todoList.length !== 0;
     },
+    currentFiltering(){
+      return this.filtering;
+    }
   },
   methods:{
     onClickChecked(event){
@@ -171,6 +174,9 @@ li > .firstInput{
 }
 
 .filterBoxChild:hover{
-  border: 2px solid rgba(255,0,0,0.3);
+  border: 2px solid rgba(255,0,0,0.2);
+}
+.activeBorder{
+  border: 2px solid rgba(255, 0, 0, 0.3);
 }
 </style>
