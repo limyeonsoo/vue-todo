@@ -10,6 +10,7 @@
         @filter-clicked="onFilterClicked"
         @clear-clicked="onClearClicked"
         @icon-clicked="onIconClicked"
+        @db-clicked="onDblClicked"
     />
   </div>
 </template>
@@ -47,8 +48,6 @@ export default {
       }
     },
     onClickChecked(id, checked){
-      console.log(id);
-      console.log(checked);
       let updateTargetIndex = this.todoList.findIndex(todo => todo.idx === id);
       if(checked){
         this.$set(this.todoList, updateTargetIndex, {
@@ -65,14 +64,6 @@ export default {
         })
       }
     },
-    onMouseEntered(target){
-      target.lastChild.classList.remove('hideX');
-      target.lastChild.classList.add('showX');
-    },
-    onMouseLeaved(target){
-      target.lastChild.classList.remove('showX');
-      target.lastChild.classList.add('hideX');
-    },
     onListXClicked(id){
       let removeTargetIndex = this.todoList.findIndex(todo => todo.idx === id);
       this.todoList.splice(removeTargetIndex, 1);
@@ -85,7 +76,6 @@ export default {
     },
     onIconClicked(){
       let currState = this.todoList.filter(todo => todo.checked === true).length;
-      console.log(currState, this.todoList.length);
       if(currState === this.todoList.length){
         this.todoList.forEach(todo => {
           todo.type = 'Active';
@@ -97,7 +87,11 @@ export default {
           todo.checked = true;
         })
       }
-      console.log(JSON.stringify(this.todoList));
+    },
+    onDblClicked(id){
+      let targetInput = document.getElementById(id);
+
+      console.log(targetInput);
     }
   }
 }
@@ -111,6 +105,7 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  user-select: none;
 }
 #todos{
   font-size: 125px;

@@ -3,12 +3,12 @@
     <div v-for="(todo, key, index) in filteredToDoList" :key="index" @mouseenter="showXBtnIdx = todo.idx" @mouseleave="showXBtnIdx = null">
       <li>
         <input class="firstInput" :id="todo.idx" v-model="todo['checked']" type="checkbox" @change="onClickChecked"/>
-        <input class="secondInput" :value="todo.content" />
+        <input class="secondInput" :value="todo.content" disabled @dblclick="onDblClicked"/>
         <span v-show="showXBtnIdx === todo.idx" :id="todo.idx" class="listX" @click="onListXClicked">x</span>
       </li>
     </div>
     <div id="filterBoxContainer">
-      <span id="filterInfo" style="font-size:x-small">{{filteredToDoList.length}} items left</span>
+      <span id="filterInfo" style="font-size:x-small">{{toDoListCount}} items left</span>
       <div id="filterBox" @click="onFilterClicked">
         <div class="filterBoxChild">All</div>
         <div class="filterBoxChild">Active</div>
@@ -38,6 +38,9 @@ export default {
       else
         return this.todoList.filter(todo => todo.type === this.filtering);
     },
+    toDoListCount(){
+      return this.todoList.filter(todo => todo.type === 'Active').length;
+    },
     showFilteringBox(){
       return this.todoList.length !== 0;
     },
@@ -54,6 +57,9 @@ export default {
     },
     onClearClicked(){
       this.$emit('clear-clicked');
+    },
+    onDblClicked(event){
+      this.$emit('db-clicked', event.target.id);
     }
   }
 }
@@ -66,7 +72,7 @@ export default {
 }
 li{
   font-size: x-large;
-  padding-left: 2%;
+  padding: 2%;
   list-style: none;
   border-top: 1px solid lightgray;
 
@@ -80,28 +86,33 @@ li > .firstInput{
   background-color: white;
   border-radius: 50%;
   vertical-align: middle;
-  border: 1px solid rgba(0, 255, 0, 0.7);
+  border: 1px solid rgba(125, 125, 125, 0.3);
   appearance: none;
   -webkit-appearance: none;
   outline: none;
   cursor: pointer;
-  margin-right: 3%;
+  margin: 0 3% 0 0;
 }
 li > .secondInput{
   width: 70%;
   height: 100%;
   border: none;
+  font-weight: bold;
+  font-size: large;
+  -webkit-transition: color 0.5s ease-in-out;
+  transition: color 0.5s ease-in-out;
+  background-color: transparent;
 }
 li > .firstInput:checked{
-  background: url('../assets/check.png');
-  background-size: 1.6em;
+  background: url('../assets/checkItalic.png') center no-repeat;
+  background-size: 13px;
   overflow: hidden;
+  border-color: #5DC2AF;
 }
 li > .firstInput:checked + .secondInput{
-  color: gray;
-  opacity: 0.5;
+  color: rgba(125, 125, 125, 0.5);
   text-decoration: line-through;
-  transition: opacity 0.3s;
+
 }
 .listX{
   float:right;
@@ -114,22 +125,29 @@ li > .firstInput:checked + .secondInput{
   align-items: center;
   justify-content: space-between;
   padding: 2%;
-
   box-shadow:
       0 1px 1px rgba(0,0,0,0.1),
       0 10px 0 -5px #fff,
       0 10px 1px -4px rgba(0,0,0,0.2),
       0 20px 0 -10px #fff,
       0 20px 1px -9px rgba(0,0,0,0.2);
+  border-top: 1px solid lightgray;
 }
 
 #filterBox{
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   padding: 5px 10%;
   flex-grow: 1;
 }
-.filterBoxChild:hover {
-  outline: 1px solid red;
+
+.filterBoxChild{
+  padding: 1% 3%;
+  border: 2px solid rgba(0, 0, 0, 0);
+  border-radius: 5px;
+}
+
+.filterBoxChild:hover{
+  border: 2px solid rgba(255,0,0,0.3);
 }
 </style>

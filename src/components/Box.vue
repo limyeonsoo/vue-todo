@@ -1,11 +1,13 @@
 <template>
   <div id="box">
     <div id="inputBoxContainer">
+<!--      <i v-if="showIcon" for="inputBox">V</i>-->
+      <img v-show="showIcon" @click="onIconClicked" src="../assets/check.png"/>
       <input id="inputBox"
              placeholder="What needs to be done?"
              @keypress="onClickEnter"
       />
-      <i v-if="showIcon" for="inputBox" @click="onIconClicked">V</i>
+
     </div>
     <List
       :todo-list="todoList"
@@ -14,6 +16,7 @@
       @list-x-clicked="onListXClicked"
       @filter-clicked="onFilterClicked"
       @clear-clicked="onClearClicked"
+      @db-clicked="onDblClicked"
     />
   </div>
 </template>
@@ -52,6 +55,9 @@ export default {
     },
     onIconClicked(){
       this.$emit('icon-clicked');
+    },
+    onDblClicked(id){
+      this.$emit('db-clicked', id);
     }
   }
 }
@@ -66,11 +72,19 @@ export default {
   }
   #inputBoxContainer{
     position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 2%;
+  }
+  #inputBoxContainer > img{
+    margin-right: 3%;
+    width: 1em;
+    height: 1em;
+    opacity: 0.4;
   }
   #inputBox{
-    width:90%;
     height:50px;
-    padding-left: 10%;
     padding-right: 0;
     font-size: 24px;
     border: none;
@@ -82,6 +96,8 @@ export default {
   }
   #inputBox::placeholder{
     text-overflow:ellipsis;
+    font-style: italic;
+    opacity: 0.6;
   }
   #inputBox:focus{
     outline:none;
