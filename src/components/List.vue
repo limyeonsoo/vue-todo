@@ -1,10 +1,10 @@
 <template>
   <div id="listBox" v-if="showFilteringBox">
-    <div v-for="(todo, key, index) in filteredToDoList" :key="index">
-      <li :style="{textDecoration: todo.type === 'Completed' ? 'line-through' : 'none'}" @mouseenter="onMouseOver" @mouseleave="onMouseOut">
-        <input :id="todo.idx" v-model="todo['checked']" type="checkbox" @change="onClickChecked"/>
-        <label :for="todo.idx">{{todo.content}}</label>
-        <span :id="todo.idx" class="listX hideX" @click="onListXClicked">x</span>
+    <div v-for="(todo, key, index) in filteredToDoList" :key="index" @mouseenter="showXBtnIdx = todo.idx" @mouseleave="showXBtnIdx = null">
+      <li>
+        <input class="firstInput" :id="todo.idx" v-model="todo['checked']" type="checkbox" @change="onClickChecked"/>
+        <input class="secondInput" :value="todo.content" />
+        <span v-show="showXBtnIdx === todo.idx" :id="todo.idx" class="listX" @click="onListXClicked">x</span>
       </li>
     </div>
     <div id="filterBoxContainer">
@@ -26,6 +26,11 @@ export default {
     todoList: Array,
     filtering: String
   },
+  data(){
+    return{
+      showXBtnIdx: null
+    }
+  },
   computed:{
     filteredToDoList(){
       if(this.filtering === 'All')
@@ -40,12 +45,6 @@ export default {
   methods:{
     onClickChecked(event){
       this.$emit('check-clicked', event.target.id, event.target.checked)
-    },
-    onMouseOver(event){
-      this.$emit('mouse-entered', event.target)
-    },
-    onMouseOut(event){
-      this.$emit('mouse-leaved', event.target);
     },
     onListXClicked(event) {
       this.$emit('list-x-clicked', event.target.id);
@@ -67,17 +66,17 @@ export default {
 }
 li{
   font-size: x-large;
-  padding-left: 4%;
+  padding-left: 2%;
   list-style: none;
-  border: 1px solid lightgray;
+  border-top: 1px solid lightgray;
 
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-li > input{
-  width: 1.3em;
-  height: 1.3em;
+li > .firstInput{
+  width: 1.6em;
+  height: 1.6em;
   background-color: white;
   border-radius: 50%;
   vertical-align: middle;
@@ -86,15 +85,22 @@ li > input{
   -webkit-appearance: none;
   outline: none;
   cursor: pointer;
+  margin-right: 3%;
 }
-li > input:checked{
+li > .secondInput{
+  width: 70%;
+  height: 100%;
+  border: none;
+}
+li > .firstInput:checked{
   background: url('../assets/check.png');
-  background-size: 1.3em;
+  background-size: 1.6em;
   overflow: hidden;
 }
-li > input:checked + label{
+li > .firstInput:checked + .secondInput{
   color: gray;
   opacity: 0.5;
+  text-decoration: line-through;
   transition: opacity 0.3s;
 }
 .listX{
@@ -102,19 +108,19 @@ li > input:checked + label{
   margin-right:10px;
   color: rgba(255,0,0,0.3);
 }
-.hideX{
-  display: none;
-}
-.showDecoration{
-  text-decoration: line-through;
-}
 #filterBoxContainer{
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   padding: 2%;
-  margin-left: 3%;
+
+  box-shadow:
+      0 1px 1px rgba(0,0,0,0.1),
+      0 10px 0 -5px #fff,
+      0 10px 1px -4px rgba(0,0,0,0.2),
+      0 20px 0 -10px #fff,
+      0 20px 1px -9px rgba(0,0,0,0.2);
 }
 
 #filterBox{

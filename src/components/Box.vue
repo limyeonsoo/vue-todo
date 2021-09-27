@@ -11,8 +11,6 @@
       :todo-list="todoList"
       :filtering="filtering"
       @check-clicked="onCheckClicked"
-      @mouse-entered="onMouseEntered"
-      @mouse-leaved="onMouseLeaved"
       @list-x-clicked="onListXClicked"
       @filter-clicked="onFilterClicked"
       @clear-clicked="onClearClicked"
@@ -46,14 +44,6 @@ export default {
     onListXClicked(target){
       this.$emit('list-x-clicked', target);
     },
-    onMouseEntered(target){
-      target.lastChild.classList.remove('hideX');
-      target.lastChild.classList.add('showX');
-    },
-    onMouseLeaved(target){
-      target.lastChild.classList.remove('showX');
-      target.lastChild.classList.add('hideX');
-    },
     onFilterClicked(filtering){
       this.$emit('filter-clicked', filtering);
     },
@@ -71,21 +61,34 @@ export default {
   #box{
     margin-right: auto;
     margin-left: auto;
-    width: 50%;
+    width: 60%;
     border: 1px solid lightgray;
   }
   #inputBoxContainer{
     position: relative;
   }
   #inputBox{
-    width:89%;
-    height:40px;
+    width:90%;
+    height:50px;
     padding-left: 10%;
-    font-size: x-large;
+    padding-right: 0;
+    font-size: 24px;
+    border: none;
+    border-bottom: 1px;
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #inputBox::placeholder{
+    text-overflow:ellipsis;
+  }
+  #inputBox:focus{
+    outline:none;
   }
   #inputBoxContainer > i{
     position: absolute;
-    left: 5%;
+    left: 4%;
     top: 15px;
     font-weight: bolder;
     color: rgba(111, 111, 111, 0.5);
