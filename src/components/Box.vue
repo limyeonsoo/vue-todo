@@ -1,7 +1,7 @@
 <template>
   <div id="box">
     <div id="inputBoxContainer">
-      <img v-show="showIcon" @click="onIconClicked" src="../assets/check.png"/>
+      <img id="allCheckIcon" v-show="showIcon" @click="onIconClicked" src="../assets/check.png"/>
       <input id="inputBox"
              placeholder="What needs to be done?"
              @keypress="onClickEnter"

@@ -18,6 +18,7 @@
 <script>
 import Box from './components/Box.vue';
 import {uuid} from 'vue-uuid';
+import {hello} from './service/todoService';
 
 export default {
   name: 'App',
@@ -29,9 +30,31 @@ export default {
             content: string,
             type: string,  (Active / Completed)
             checked: null / true
+         }
+         details
+         id
+         status
       */,
       fixState:false,
     }
+  },
+  async mounted(){
+    const res = await hello();
+    res.data.map((todo) => {
+      console.log(todo);
+      this.todoList.push({
+        idx: todo.id,
+        content:todo.details,
+        type: todo.status === 'active' ? 'Active' : 'Completed',
+        checked: todo.status === 'active' ? null : true,
+      })
+    })
+
+    // this.todoList.forEach((t) => {
+    //   for(let key in t){
+    //     console.log(key + ": " + t[key]);
+    //   }
+    // })
   },
   components: { Box },
   methods:{
@@ -77,16 +100,19 @@ export default {
     },
     onIconClicked(){
       let currState = this.todoList.filter(todo => todo.checked === true).length;
+      let checkBtn = document.querySelector('#allCheckIcon');
       if(currState === this.todoList.length){
         this.todoList.forEach(todo => {
           todo.type = 'Active';
           todo.checked = null;
         })
+        checkBtn.style.opacity = 0.4;
       }else{
         this.todoList.forEach(todo => {
           todo.type = 'Completed';
           todo.checked = true;
         })
+        checkBtn.style.opacity = 1.0;
       }
     },
     onFixEnter(event){
