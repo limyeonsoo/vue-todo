@@ -18,7 +18,7 @@
 <script>
 import Box from './components/Box.vue';
 import {uuid} from 'vue-uuid';
-import {hello} from './service/todoService';
+import {todoGet, todoPost, todoDelete, todoUpdate, todoPatchContent, todoPatchStatus} from './service/todoService';
 
 export default {
   name: 'App',
@@ -39,9 +39,8 @@ export default {
     }
   },
   async mounted(){
-    const res = await hello();
+    const res = await todoGet();
     res.data.map((todo) => {
-      console.log(todo);
       this.todoList.push({
         idx: todo.id,
         content:todo.details,
@@ -49,29 +48,27 @@ export default {
         checked: todo.status === 'active' ? null : true,
       })
     })
-
-    // this.todoList.forEach((t) => {
-    //   for(let key in t){
-    //     console.log(key + ": " + t[key]);
-    //   }
-    // })
   },
   components: { Box },
   methods:{
-    onClickEnter(event){
+    async onClickEnter(event){
       if(event.key === 'Enter'){
         let inputTag = document.querySelector('#inputBox');
         if(inputTag.value === '') return;
+        let newId = uuid.v1();
+        let newContent = inputTag.value;
         this.todoList.push({
-          idx: uuid.v1(),
-          content:inputTag.value,
+          idx: newId,
+          content:newContent,
           type: 'Active',
           checked: null
         })
         inputTag.value = '';
+
+        await todoPost(newId, newContent);
       }
     },
-    onClickChecked(id, checked){
+    async onClickChecked(id, checked){
       let updateTargetIndex = this.todoList.findIndex(todo => todo.idx === id);
       if(checked){
         this.$set(this.todoList, updateTargetIndex, {
@@ -79,6 +76,8 @@ export default {
           type: 'Completed',
           checked: true
         })
+
+        await todoPatchStatus(id, 'done');
       }
       else {
         this.$set(this.todoList, updateTargetIndex, {
@@ -86,36 +85,48 @@ export default {
           type: 'Active',
           checked: null
         })
+        await todoPatchStatus(id, 'active');
       }
     },
-    onListXClicked(id){
+    async onListXClicked(id){
       let removeTargetIndex = this.todoList.findIndex(todo => todo.idx === id);
       this.todoList.splice(removeTargetIndex, 1);
+
+      await todoDelete(id);
     },
     onFilterClicked(filtering){
       this.filtering = filtering;
     },
     onClearClicked(){
+      this.todoList.forEach(async (todo) => {
+        if(todo.type === 'Completed'){
+          await todoDelete(todo.idx);
+        }
+      })
       this.todoList = this.todoList.filter(todo => todo.type === 'Active')
     },
     onIconClicked(){
       let currState = this.todoList.filter(todo => todo.checked === true).length;
       let checkBtn = document.querySelector('#allCheckIcon');
       if(currState === this.todoList.length){
-        this.todoList.forEach(todo => {
+        this.todoList.forEach(async (todo) => {
           todo.type = 'Active';
           todo.checked = null;
+
+          await todoUpdate(todo.idx, todo.content, todo.type)
         })
         checkBtn.style.opacity = 0.4;
       }else{
-        this.todoList.forEach(todo => {
+        this.todoList.forEach(async (todo) => {
           todo.type = 'Completed';
           todo.checked = true;
+
+          await todoUpdate(todo.idx, todo.content, todo.type)
         })
         checkBtn.style.opacity = 1.0;
       }
     },
-    onFixEnter(event){
+    async onFixEnter(event){
       if(event.key === 'Enter') {
         let id = event.target.getAttribute('wrapId');
         let val = event.target.value;
@@ -125,6 +136,8 @@ export default {
           content: val,
         })
         event.target.blur();
+
+        await todoPatchContent(id, val);
       }
     }
   }
